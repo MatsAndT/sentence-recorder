@@ -25,6 +25,12 @@ app.add_middleware(
 async def read_root() -> dict:
     return {"message": "connected to backend"}
 
+@app.get("/tasks")
+def list_tasks():
+    tasks_dir = Path("data/json")
+    task_files = tasks_dir.glob("*.json")
+    task_ids = [file.stem for file in task_files]
+    return JSONResponse(task_ids)
 
 @app.get("/read-json/{task_id}")
 def read_json(task_id: str):
