@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
@@ -12,6 +12,7 @@ const Task = () => {
   const [sentences, setSentences] = useState<SentenceEntity[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [agreed, setAgreed] = useState(false);
+  const [name, setName] = useState("");
   const [selectedRecordings, setSelectedRecordings] = useState<
     { sentenceId: string; audioUrl: string }[]
   >([]);
@@ -29,13 +30,24 @@ const Task = () => {
         const sentences: SentenceEntity[] = await response.json();
         setSentences(sentences);
       } catch (error) {
-        setError(error.message);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError(String(error));
+        }
       }
     };
     fetchSentences();
   }, [taskId]);
 
   const handleSubmit = async () => {
+    const trimmedName = name.trim();
+
+    if (!trimmedName) {
+      alert("Please enter your name before submitting.");
+      return; // Prevent submission if name is not entered
+    }
+
     if (!agreed) {
       alert("Please agree to the terms before submitting.");
       return; // Prevent submission if not agreed
@@ -66,8 +78,11 @@ const Task = () => {
     );
 
     try {
+      const submitUrl = `${config.backendUrl}/submit-recordings/${taskId}?name=${encodeURIComponent(
+        trimmedName,
+      )}`;
       const response = await fetch(
-        `${config.backendUrl}/submit-recordings/${taskId}`,
+        submitUrl,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -97,7 +112,7 @@ const Task = () => {
   return (
     <div className="Task">
       <Container className="my-5 text-center">
-        <TaskDescription setAgreed={setAgreed} />
+        <TaskDescription setAgreed={setAgreed} setName={setName} />
         <RecordTable
           sentences={sentences}
           onSelectionUpdate={setSelectedRecordings}

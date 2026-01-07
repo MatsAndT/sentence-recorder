@@ -50,8 +50,8 @@ class Recording(BaseModel):
 
 
 @app.post("/submit-recordings/{task_id}")
-async def submit_recordings(recordings: list[Recording], task_id: str):
-    audio_dir = Path(f"data/audio/{task_id}")
+async def submit_recordings(recordings: list[Recording], task_id: str, name: str):
+    audio_dir = Path(f"data/audio/{task_id}/{name}")
     audio_dir.mkdir(parents=True, exist_ok=True)
 
     if not recordings:

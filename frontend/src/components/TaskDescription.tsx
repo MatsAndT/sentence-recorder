@@ -32,13 +32,48 @@ const AgreeCheckbox: React.FC<AgreeCheckboxProps> = ({
   );
 };
 
-interface TaskDescriptionProps {
-  setAgreed: (value: boolean) => void;
+interface NameInputProps {
+  setName: (value: string) => void;
+  nameLabel: string;
 }
 
-const TaskDescription: React.FC<TaskDescriptionProps> = ({ setAgreed }) => {
+const NameInput: React.FC<NameInputProps> = ({
+  setName,
+  nameLabel,
+}) => {
+  const [name, setLocalName] = useState("");
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextName = e.target.value;
+    setLocalName(nextName);
+    setName(nextName);
+  };
+
+  return (
+    <Form className="mb-3 fs-5 fw-bold">
+      <Form.Group controlId="name">
+        <Form.Label>{nameLabel}</Form.Label>
+        <Form.Control
+          type="text"
+          value={name}
+          onChange={handleNameChange}
+          placeholder="Your name"
+        />
+      </Form.Group>
+    </Form>
+  );
+};
+
+interface TaskDescriptionProps {
+  setAgreed: (value: boolean) => void;
+  setName: (value: string) => void;
+}
+
+const TaskDescription: React.FC<TaskDescriptionProps> = ({ setAgreed, setName }) => {
   const agreeLabel =
     "I agree that my voice will be made public as a part of a dataset.";
+
+  const nameLabel = "Please enter your name to proceed.";
 
   return (
     <Container>
@@ -74,6 +109,8 @@ const TaskDescription: React.FC<TaskDescriptionProps> = ({ setAgreed }) => {
               in the future.
             </li>
           </ul>
+
+          <NameInput setName={setName} nameLabel={nameLabel} />
           <AgreeCheckbox setAgreed={setAgreed} agreeLabel={agreeLabel} />
         </div>
       </Card>
