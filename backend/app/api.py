@@ -5,12 +5,28 @@ import json
 from pathlib import Path
 from pydantic import BaseModel
 import base64
+import os
 
 
 app = FastAPI()
 
-with open("app/config.json") as f:
-    origins = json.load(f)["origins"]
+def _parse_origins(value: str) -> list[str]:
+    parts = [p.strip() for p in value.split(",")]
+    return [p for p in parts if p]
+
+
+origins: list[str]
+
+cors_env = os.getenv("CORS_ORIGINS")
+frontend_url_env = os.getenv("FRONTEND_URL")
+
+if cors_env:
+    origins = _parse_origins(cors_env)
+elif frontend_url_env:
+    origins = [frontend_url_env.strip()]
+else:
+    with open("app/config.json") as f:
+        origins = json.load(f)["origins"]
 
 app.add_middleware(
     CORSMiddleware,

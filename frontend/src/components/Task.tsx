@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import TaskDescription from "./TaskDescription";
 import RecordTable from "./RecordTable";
 import { SentenceEntity } from "./types";
-import config from "../config.json";
+import { backendUrl } from "../config";
 
 const Task = () => {
   const { taskId } = useParams<{ taskId: string }>();
@@ -22,7 +22,7 @@ const Task = () => {
     const fetchSentences = async () => {
       try {
         const response = await fetch(
-          `${config.backendUrl}/read-json/${taskId}`,
+          `${backendUrl}/read-json/${taskId}`,
         );
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
@@ -78,7 +78,7 @@ const Task = () => {
     );
 
     try {
-      const submitUrl = `${config.backendUrl}/submit-recordings/${taskId}?name=${encodeURIComponent(
+      const submitUrl = `${backendUrl}/submit-recordings/${taskId}?name=${encodeURIComponent(
         trimmedName,
       )}`;
       const response = await fetch(

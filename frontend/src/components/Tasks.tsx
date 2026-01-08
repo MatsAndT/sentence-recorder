@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
-import config from "../config.json";
+import { backendUrl } from "../config";
 
 const Tasks = () => {
 	const [taskIds, setTaskIds] = useState<string[] | null>(null);
@@ -14,7 +14,7 @@ const Tasks = () => {
 	useEffect(() => {
 		const fetchTasks = async () => {
 			try {
-				const response = await fetch(`${config.backendUrl}/tasks`);
+				const response = await fetch(`${backendUrl}/tasks`);
 				if (!response.ok) {
 					throw new Error(`Error: ${response.statusText}`);
 				}

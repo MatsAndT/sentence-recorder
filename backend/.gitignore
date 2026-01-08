@@ -1,2 +1,6 @@
 __pycache__
 *.webm
+.venv
+*.json
+!sample1.json
+!sample2.json
